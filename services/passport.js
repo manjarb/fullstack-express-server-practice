@@ -22,12 +22,13 @@ passport.use(
         clientSecret: keys.googleClientSecret,
         callbackURL: '/auth/google/callback',
         proxy: true
-    }, (accessToken, refreshToken, profile, done) => {
+    },
+    async (accessToken, refreshToken, profile, done) => {
         /*console.log(accessToken, 'accessToken');
         console.log(refreshToken, 'refreshToken');
         console.log(profile, 'profile');*/
 
-        User.findOne({ googleId: profile.id })
+       /* User.findOne({ googleId: profile.id })
             .then((existingUser) =>{
                 if (existingUser) {
                     // already dave a record with given profile ID
@@ -38,6 +39,15 @@ passport.use(
                         .save()
                         .then(user => done(null, user));
                 }
-            });
+            });*/
+
+        const existingUser = await User.findOne({ googleId: profile.id });
+        if (existingUser) {
+            // already dave a record with given profile ID
+            return done(null, existingUser);
+        }
+        // Don't have user with current profile id
+        await new User({ googleId: profile.id }).save();
+        done(null, user)
     })
 );
