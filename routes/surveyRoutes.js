@@ -15,7 +15,7 @@ module.exports = (app) => {
     });
 
     app.post('/api/surveys/webhooks', (req, res) => {
-        const events = _.map(req.body, ({ emai, url }) => {
+        const events = _.map(req.body, ({ email, url }) => {
            const pathname = new URL(url).pathname;
            const p = new Path('/api/surveys/:surveyId/:choice');
            const match = p.test(pathname);
